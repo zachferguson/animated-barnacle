@@ -33,27 +33,21 @@ def updater(directory, spacing):
             #print(os.listdir(itempath))
             print(spacing * " " + f"_______end_directory: {item}_______") 
             
-
-def server_file_modded(ftp, file_name):
-    temp = ftp.mlsd(file_name)
-    for item in temp:
-        print(file_name)
-        mod = item[1]['modify']
-        filetype = item[1]['type']
-        dated = datetime.datetime(int(mod[:4]),int(mod[4:6]),int(mod[6:8]), int(mod[8:10]), int(mod[10:12]), int(mod[12:]))
-        return_object = {}
-        return_object['modified'] = datetime.datetime(int(mod[:4]),int(mod[4:6]),int(mod[6:8]), int(mod[8:10]), int(mod[10:12]), int(mod[12:]))
-        return_object['filetype'] = filetype
-        return dated
-
-# WORKS #
-def ftp_connection():
-    credentials = get_credentials()
-    ftp = FTP_TLS()
-
-    ftp.connect(credentials['ftp_client'],)
-    ftp.login(credentials['user'], credentials['password'],)
+def parse_server_data(ftp):
     server_data = []
+    
+    def server_file_modded(ftp, file_name):
+        temp = ftp.mlsd(file_name)
+        for item in temp:
+            print(file_name)
+            mod = item[1]['modify']
+            filetype = item[1]['type']
+            dated = datetime.datetime(int(mod[:4]),int(mod[4:6]),int(mod[6:8]), int(mod[8:10]), int(mod[10:12]), int(mod[12:]))
+            return_object = {}
+            return_object['modified'] = datetime.datetime(int(mod[:4]),int(mod[4:6]),int(mod[6:8]), int(mod[8:10]), int(mod[10:12]), int(mod[12:]))
+            return_object['filetype'] = filetype
+            return dated
+        
     ftp.retrlines('LIST', server_data.append)
     for item in server_data:
         file_name = item[item.find(":")+4:]
@@ -64,6 +58,16 @@ def ftp_connection():
             if modtime:
                 print(modtime)
                 print("____________________________________________")
+
+# WORKS #
+def ftp_connection():
+    credentials = get_credentials()
+    ftp = FTP_TLS()
+
+    ftp.connect(credentials['ftp_client'],)
+    ftp.login(credentials['user'], credentials['password'],)
+    server_data = parse_server_data(ftp)
+
     
     ftp.quit()
     
