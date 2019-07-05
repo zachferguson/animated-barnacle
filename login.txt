@@ -1,1 +1,0 @@
-{"ftp_client": "ftp.equipinspect.com", "ftp_port": "7822", "user": "updater@thezachferguson.com", "password": "f~%@)p4gvLjQ"}
